@@ -1,37 +1,27 @@
-
 body {
-  background-color: darkgreen;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: Arial, sans-serif;
 }
 
 #board {
-  width: 440px;
-  height: 440px;
-  border: 1px solid white;
-  background-color: black;
-}
-
-#score, #highScore {
-  color: white;
+  width: 400px;
+  height: 400px;
+  border: 1px solid rgba(255, 0, 0, 0.801);
+  position: relative;
 }
 
 .snake, .apple {
-  display: block;
   width: 20px;
   height: 20px;
   position: absolute;
-  user-select: none;
 }
 
 .snake {
-  background-color: green;
-  z-index: 2;
-}
-
-#snake-head {
-  background-color: darkgreen;
+  background-color: rgb(81, 0, 128);
 }
 
 .apple {
   background-color: red;
-  z-index: 1;
 }
