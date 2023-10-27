@@ -2,7 +2,7 @@
 
 $(document).ready(runProgram); // wait for the HTML / CSS elements of the page to fully load, then execute runProgram()
   
-function runProgram(){}
+function runProgram(){
   ////////////////////////////////////////////////////////////////////////////////
   //////////////////////////// SETUP /////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
@@ -12,32 +12,26 @@ function runProgram(){}
   var FRAMES_PER_SECOND_INTERVAL = 1000 / FRAME_RATE;
   
   // Game Item Objects
-
-
-  // one-time setup
-  var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
-  $(document).on('keydown', handleEvent);
-  function handleKeyDown(event) {
-    console.log(event.keyCode);
-  }
- // change 'eventType' to the type of event you want to handle
-var KEY = {
+  var KEY = {
     LEFT: 37,
     UP: 38,
     RIGHT: 39,
-    DOWN: 40,
-    A: 65,
-    W: 87,
-    S: 83,
-    D: 68
-};
-var walker = {
-  x: 0,
-  y: 0,
-  SpeedX: 0,
-  speedY: 0
-};
-$(document).on('keyup', handleKeyUp);
+    DOWN: 40,  
+  };
+
+  var walker1 = {
+    positionX: 0,
+    positionY: 0,
+    speedX: 0,
+    speedY: 0,
+  }
+
+  // one-time setup
+
+  var interval = setInterval(newFrame, FRAMES_PER_SECOND_INTERVAL);   // execute newFrame every 0.0166 seconds (60 Frames per second)
+  $(document).on('keydown', handleKeyDown);
+  $(document).on('keyup', handleKeyUp);                            // change 'eventType' to the type of event you want to handle
+
   ////////////////////////////////////////////////////////////////////////////////
   ///////////////////////// CORE LOGIC ///////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
@@ -46,83 +40,82 @@ $(document).on('keyup', handleKeyUp);
   On each "tick" of the timer, a new frame is dynamically drawn using JavaScript
   by calling this function and executing the code inside.
   */
-
+  function newFrame() {
+    repositionGameItem();
+    wallCollision();
+    redrawGameItem();
+  }
   
   /* 
   Called in response to events.
- 
   */
-function handleKeyDown(event) {
-  if (event.which === KEY.LEFT){
-    console.log("left pressed");
-  } else if (event.which === KEY.UP){
-    console.log("up pressed");
-  } else if (event.which === KEY.RIGHT){
-    console.log("Right pressed");
-} else if (event.which === KEY.DOWN){
-  console.log("Down pressed")
-}
-function handleKeyDown(event) {
-  if (event.which === KEY.LEFT){
-    walker.SpeedX = -5;
-    walker.SpeedY = 0;
-  }  else if (event.which === KEY.DOWN){
-    walker.SpeedX = 0;
-    walker.SpeedY = 5;
-  } else if (event.which === KEY.UP){
-    walker.SpeedX = 0;
-    walker.SpeedY = -5;
-  }  else if (event.which === KEY.RIGHT){
-    walker.SpeedX = -5;
-    walker.SpeedY = 0;
-  } 
-}
-function handleKeyUp(event) {
-  if (event.which >= KEY.LEFT && event.which <= KEY.DOWN) {
-    walker.SpeedX = 0;
-    walker.SPeedY = 0;
+  function handleKeyDown(event) {
+    if (event.which === KEY.LEFT) {
+      console.log("left pressed")
+      walker1.speedX = -5
+    } else if (event.which === KEY.RIGHT) {
+      console.log("right pressed")
+      walker1.speedX = 5
+    } else if (event.which === KEY.UP) {
+      console.log("up pressed")
+      walker1.speedY = -5
+    } else if (event.which === KEY.DOWN) {
+      console.log("down pressed")
+      walker1.speedY = 5
+    }
   }
-}
+  
+  function handleKeyUp(event) {
+    if (event.which === KEY.LEFT || event.which === KEY.RIGHT) {
+      walker1.speedX = 0
+    } else if (event.which === KEY.UP || event.which === KEY.DOWN) {
+      walker1.speedY = 0
+    }
+
+  }
+
   ////////////////////////////////////////////////////////////////////////////////
   ////////////////////////// HELPER FUNCTIONS ////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////////////
 
-  
-  function repositionGaneItem() {
-    walker.x += walker.SpeedX;
-    walker.y += walker.speedY;
-    wallCollision();
-   }
-    function redrawGameItem() {
-    $("#walker").css("left". walker.x);
-    $("#walker").css("top", walker.y);
+
+  function repositionGameItem() {
+    walker1.positionX += walker1.speedX
+    walker1.positionY += walker1.speedY
   }
-    function endGame() {
-    clearInterval(interval);
-    
-    $(document).off();
-  }
-    function wallCollision(){
-      if (walker.x < 0) {
-        walker.x = 0;
-      }
-      if (walker.y < 0) {
-        walker.y = 0;
-      }
-      if (walker.x + $("#walker").width() > $("#board").width()) {
-        (walker.x + $("#board").width() - $("#walker").width()) ;
-      }
-      if (walker.y + $("#walker").height() > $("#board").height()) {
-        walker.y = $("#board").height() - $("#walker").height();
-      }
+
+  function wallCollision() {
+    if (walker1.positionX >= $("#board").width()-51) {
+      walker1.positionX = $("#board").width()-51
+      walker1.speedX = 0
+    } else if (walker1.positionX <= 0) {
+      walker1.positionX = 0
+      walker1.speedX = 0
+    } 
+
+    if (walker1.positionY >= $("#board").height()-51) {
+      walker1.positionY = $("#board").height()-51;
+      walker1.speedY = 0;
+    } else if (walker1.positionY <= 0) {
+      walker1.positionY = 0;
+      walker1.speedY = 0;
     }
-  function newframe(){
-    repositianGameItem()
-    redrauGameItem();
-    wallcollision();
   }
-    setInterval(newfrane, 16);
+
+  
+  function redrawGameItem() {
+    $("#walker1").css("left", walker1.positionX)
+    $("#walker1").css("top", walker1.positionY)
+  }
+
+  
+
+  function endGame() {
+    // stop the interval timer
+    clearInterval(interval);
+
     // turn off event handlers
     $(document).off();
   }
-
+  
+}
